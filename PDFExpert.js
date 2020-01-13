@@ -1,9 +1,8 @@
 /*
 ^https:\/\/license\.pdfexpert\.com\/api\/.*\/(documents|pdfexpert6)\/subscription\/(refresh$|check$)
 */
-var body = $response.body;
-var obj = JSON.parse(body);
-var obj = {
+var obj = JSON.parse($response.body);
+obj = {
   originalTransactionId: "520000468152521",
   subscriptionState: "active",
   isInGracePeriod: false,
@@ -15,4 +14,4 @@ var obj = {
   subscriptionReceiptId: "1572178404000"
 };
 
-$done({ body: JSON.stringify(obj)});
+$done({body: JSON.stringify(obj)});
