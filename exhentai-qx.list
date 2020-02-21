@@ -1,5 +1,5 @@
 # > Exhentai
-host-keyword, e-hentai
-host-keyword, exhentai
-host-suffix, e-hentai.org
-host-suffix, exhentai.net
+host-keyword,e-hentai,Exhentai
+host-keyword,exhentai,Exhentai
+host-suffix,e-hentai.org,Exhentai
+host-suffix,exhentai.net,Exhentai
