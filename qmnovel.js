@@ -2,6 +2,8 @@ var cookieName = '七猫小说'
 var qmnovel = init()
 var DCURL = qmnovel.getdata("UrlDC")
 var DCKEY = qmnovel.getdata("CookieDC")
+var NCURL = qmnovel.getdata("UrlNC")
+var NCKEY = qmnovel.getdata("CookieNC")
 var VDURL = qmnovel.getdata("UrlVD")
 var VDKEY = qmnovel.getdata("CookieVD")
 var LTURL = qmnovel.getdata("UrlLT")
@@ -20,10 +22,11 @@ if (isGetCookie) {
    qmnovel.done()
 }
 
-function all() {
+async function all() {
   await DailyCheckin(time);
   await VideoCoin(time);
   await VideoCheckin(time);
+  await NoviceCheckin(time);
   await LuckyTurn(time,1);
   await LuckyTurn(time,2);
   await LuckyTurn(time,3);
@@ -35,6 +38,7 @@ function all() {
 
 function GetCookie() {
   const dailycheckin = '/api/v1/sign-in/do-sign-in';
+  const novice = '/api/v1/task/get-novice-reward';
   const videocheckin = '/api/v1/task/get-watch-video-reward';
   const turn = '/api/v2/lucky-draw/do-extracting';
   const video = '/api/v1/sign-in/sign-in-video-coin';
@@ -145,6 +149,59 @@ function GetCookie() {
         } else {
         qmnovel.msg("写入" + CookieNameVD + "Cookie失败‼️", "", "配置错误, 无法读取请求头, ");
         }
+     } else if (url.indexOf(novice) != -1) {
+     if (url) {
+        var UrlKeyNC = "UrlNC";
+        var UrlNameNC = "七猫小说新人签到";
+        var UrlValueNC = url;
+        if (qmnovel.getdata(UrlKeyNC) != (undefined || null)) {
+           if (qmnovel.getdata(UrlKeyNC) != UrlValueNC) {
+              var urlNC = qmnovel.setdata(UrlValueNC, UrlKeyNC);
+              if (!urlNC) {
+                 qmnovel.msg("更新" + UrlNameNC + "Url失败‼️", "", "");
+                 } else {
+                 qmnovel.msg("更新" + UrlNameNC + "Url成功🎉", "", "");
+                 }
+              } else {
+              qmnovel.msg(UrlNameNC + "Url未变化❗️", "", "");
+              }
+           } else {
+           var urlNC = qmnovel.setdata(UrlValueNC, UrlKeyNC);
+           if (!urlNC) {
+              qmnovel.msg("首次写入" + UrlNameNC + "Url失败‼️", "", "");
+              } else {
+              qmnovel.msg("首次写入" + UrlNameNC + "Url成功🎉", "", "");
+              }
+           }
+        } else {
+        qmnovel.msg("写入" + UrlNameNC + "Url失败‼️", "", "配置错误, 无法读取URL, ");
+        }    
+     if ($request.headers) {
+        var CookieKeyNC = "CookieNC";
+        var CookieNameNC = "七猫小说新人签到";
+        var CookieValueNC = JSON.stringify($request.headers);
+        if (qmnovel.getdata(CookieKeyNC) != (undefined || null)) {
+           if (qmnovel.getdata(CookieKeyNC) != CookieValueNC) {
+              var cookieNC = qmnovel.setdata(CookieValueNC, CookieKeyNC);
+              if (!cookieNC) {
+                 qmnovel.msg("更新" + CookieNameNC + "Cookie失败‼️", "", "");
+                 } else {
+                 qmnovel.msg("更新" + CookieNameNC + "Cookie成功🎉", "", "");
+                 }
+              } else {
+              qmnovel.msg(CookieNameNC + "Cookie未变化❗️", "", "");
+              }
+           } else {
+           var cookieNC = qmnovel.setdata(CookieValueNC, CookieKeyNC);
+           if (!cookieNC) {
+              qmnovel.msg("首次写入" + CookieNameNC + "Cookie失败‼️", "", "");
+              } else {
+              qmnovel.msg("首次写入" + CookieNameNC + "Cookie成功🎉", "", "");
+              }
+           }
+        } else {
+        qmnovel.msg("写入" + CookieNameNC + "Cookie失败‼️", "", "配置错误, 无法读取请求头, ");
+        }
      } else if (url.indexOf(turn) != -1) {
      if (url) {
         var UrlKeyLT = "UrlLT";
@@ -254,6 +311,33 @@ function DailyCheckin(t) {
       })}, t)
    })
 }
+
+function NoviceCheckin(t) {
+   return new Promise(resolve => { setTimeout(() => {
+       url = { url: NCURL, headers: JSON.parse(NCKEY) }
+       qmnovel.get(url, (error, response, data) => {
+         try {
+             var obj = JSON.parse(data);
+             qmnovel.log(`${cookieName}新人签到, data: ${data}`)
+             if (obj.data) {
+                var NCresult = '新人签到结果: 成功🎉 签到奖励: '+ obj.data.reward_cash +'金币\n';
+                Totalresult.push(NCresult);
+             } else if (obj.errors) {
+                if (obj.errors.code == 13101002) {
+                   var NCresult = '新人签到结果: 成功(重复签到)🎉 说明: ' + obj.errors.details + '\n';
+                   Totalresult.push(NCresult);
+                } else {
+                   var NCresult = '新人签到结果: 失败‼️ 说明: ' + obj.errors.details + '\n';
+                   Totalresult.push(NCresult);
+                }
+             }
+             resolve('done');    
+         } catch (e) {
+             resolve('done')
+         }
+     })}, t)
+   })
+ }
 
 function VideoCheckin(t) {
   return new Promise(resolve => { setTimeout(() => {
