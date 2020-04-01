@@ -2,8 +2,8 @@ var cookieName = '七猫小说'
 var qmnovel = init()
 var DCURL = qmnovel.getdata("UrlDC")
 var DCKEY = qmnovel.getdata("CookieDC")
-var NCURL = qmnovel.getdata("UrlNC")
-var NCKEY = qmnovel.getdata("CookieNC")
+var VDURL = qmnovel.getdata("UrlVD")
+var VDKEY = qmnovel.getdata("CookieVD")
 var LTURL = qmnovel.getdata("UrlLT")
 var LTKEY = qmnovel.getdata("CookieLT")
 var VCURL = qmnovel.getdata("UrlVC")
@@ -21,13 +21,13 @@ if (isGetCookie) {
 }
 
 function all() {
- LuckyTurn(time,1).then(LuckyTurn(time,2)).then(LuckyTurn(time,3)).then(LuckyTurn(time,4)).then(LuckyTurn(time,5)).then(DailyCheckin(time)).then(VideoCoin(time)).then(NoviceCheckin(time)).then((data) => {Notify(1500)});
+ LuckyTurn(time,1).then(LuckyTurn(time,2)).then(LuckyTurn(time,3)).then(LuckyTurn(time,4)).then(LuckyTurn(time,5)).then(DailyCheckin(time)).then(VideoCoin(time)).then(VideoCheckin(time)).then((data) => {Notify(1500)});
 }
 
 
 function GetCookie() {
   const dailycheckin = '/api/v1/sign-in/do-sign-in';
-  const novice = '/api/v1/task/get-novice-reward';
+  const videocheckin = '/api/v1/task/get-watch-video-reward';
   const turn = '/api/v2/lucky-draw/do-extracting';
   const video = '/api/v1/sign-in/sign-in-video-coin';
   var url = $request.url;
@@ -84,58 +84,58 @@ function GetCookie() {
         } else {
         qmnovel.msg("写入" + CookieNameDC + "Cookie失败‼️", "", "配置错误, 无法读取请求头, ");
         }
-     } else if (url.indexOf(novice) != -1) {
+     } else if (url.indexOf(videocheckin) != -1) {
      if (url) {
-        var UrlKeyNC = "UrlNC";
-        var UrlNameNC = "七猫小说新人签到";
-        var UrlValueNC = url;
-        if (qmnovel.getdata(UrlKeyNC) != (undefined || null)) {
-           if (qmnovel.getdata(UrlKeyNC) != UrlValueNC) {
-              var urlNC = qmnovel.setdata(UrlValueNC, UrlKeyNC);
-              if (!urlNC) {
-                 qmnovel.msg("更新" + UrlNameNC + "Url失败‼️", "", "");
+        var UrlKeyVD = "UrlVD";
+        var UrlNameVD = "七猫小说视频签到";
+        var UrlValueVD = url;
+        if (qmnovel.getdata(UrlKeyVD) != (undefined || null)) {
+           if (qmnovel.getdata(UrlKeyVD) != UrlValueVD) {
+              var UrlVD = qmnovel.setdata(UrlValueVD, UrlKeyVD);
+              if (!UrlVD) {
+                 qmnovel.msg("更新" + UrlNameVD + "Url失败‼️", "", "");
                  } else {
-                 qmnovel.msg("更新" + UrlNameNC + "Url成功🎉", "", "");
+                 qmnovel.msg("更新" + UrlNameVD + "Url成功🎉", "", "");
                  }
               } else {
-              qmnovel.msg(UrlNameNC + "Url未变化❗️", "", "");
+              qmnovel.msg(UrlNameVD + "Url未变化❗️", "", "");
               }
            } else {
-           var urlNC = qmnovel.setdata(UrlValueNC, UrlKeyNC);
-           if (!urlNC) {
-              qmnovel.msg("首次写入" + UrlNameNC + "Url失败‼️", "", "");
+           var UrlVD = qmnovel.setdata(UrlValueVD, UrlKeyVD);
+           if (!UrlVD) {
+              qmnovel.msg("首次写入" + UrlNameVD + "Url失败‼️", "", "");
               } else {
-              qmnovel.msg("首次写入" + UrlNameNC + "Url成功🎉", "", "");
+              qmnovel.msg("首次写入" + UrlNameVD + "Url成功🎉", "", "");
               }
            }
         } else {
-        qmnovel.msg("写入" + UrlNameNC + "Url失败‼️", "", "配置错误, 无法读取请求头, ");
+        qmnovel.msg("写入" + UrlNameVD + "Url失败‼️", "", "配置错误, 无法读取请求头, ");
         }    
      if ($request.headers) {
-        var CookieKeyNC = "CookieNC";
-        var CookieNameNC = "七猫小说新人签到";
-        var CookieValueNC = JSON.stringify($request.headers);
-        if (qmnovel.getdata(CookieKeyNC) != (undefined || null)) {
-           if (qmnovel.getdata(CookieKeyNC) != CookieValueNC) {
-              var cookieNC = qmnovel.setdata(CookieValueNC, CookieKeyNC);
-              if (!cookieNC) {
-                 qmnovel.msg("更新" + CookieNameNC + "Cookie失败‼️", "", "");
+        var CookieKeyVD = "CookieVD";
+        var CookieNameVD = "七猫小说视频签到";
+        var CookieValueVD = JSON.stringify($request.headers);
+        if (qmnovel.getdata(CookieKeyVD) != (undefined || null)) {
+           if (qmnovel.getdata(CookieKeyVD) != CookieValueVD) {
+              var cookieVD = qmnovel.setdata(CookieValueVD, CookieKeyVD);
+              if (!cookieVD) {
+                 qmnovel.msg("更新" + CookieNameVD + "Cookie失败‼️", "", "");
                  } else {
-                 qmnovel.msg("更新" + CookieNameNC + "Cookie成功🎉", "", "");
+                 qmnovel.msg("更新" + CookieNameVD + "Cookie成功🎉", "", "");
                  }
               } else {
-              qmnovel.msg(CookieNameNC + "Cookie未变化❗️", "", "");
+              qmnovel.msg(CookieNameVD + "Cookie未变化❗️", "", "");
               }
            } else {
-           var cookieNC = qmnovel.setdata(CookieValueNC, CookieKeyNC);
-           if (!cookieNC) {
-              qmnovel.msg("首次写入" + CookieNameNC + "Cookie失败‼️", "", "");
+           var cookieVD = qmnovel.setdata(CookieValueVD, CookieKeyVD);
+           if (!cookieVD) {
+              qmnovel.msg("首次写入" + CookieNameVD + "Cookie失败‼️", "", "");
               } else {
-              qmnovel.msg("首次写入" + CookieNameNC + "Cookie成功🎉", "", "");
+              qmnovel.msg("首次写入" + CookieNameVD + "Cookie成功🎉", "", "");
               }
            }
         } else {
-        qmnovel.msg("写入" + CookieNameNC + "Cookie失败‼️", "", "配置错误, 无法读取请求头, ");
+        qmnovel.msg("写入" + CookieNameVD + "Cookie失败‼️", "", "配置错误, 无法读取请求头, ");
         }
      } else if (url.indexOf(turn) != -1) {
      if (url) {
@@ -250,24 +250,24 @@ function DailyCheckin(t) {
   })
 }
 
-function NoviceCheckin(t) {
+function VideoCheckin(t) {
   return new Promise(resolve => {
     setTimeout(() => {
       try {
-          url = { url: NCURL, headers: JSON.parse(NCKEY) }
+          url = { url: VDURL, headers: JSON.parse(VDKEY) }
           qmnovel.get(url, (error, response, data) => {
           var obj = JSON.parse(data);
-          qmnovel.log(`${cookieName}新人签到, data: ${data}`)
+          qmnovel.log(`${cookieName}视频签到, data: ${data}`)
           if (obj.data) {
-             var NCresult = '新人签到结果: 成功🎉 签到奖励: '+ obj.data.reward_cash +'金币\n';
-             Totalresult.push(NCresult);
+             var VDresult = '视频签到结果: 成功🎉 签到奖励: '+ obj.data.reward_cash +'金币\n';
+             Totalresult.push(VDresult);
           } else if (obj.errors) {
              if (obj.errors.code == 13101002) {
-                var NCresult = '新人签到结果: 成功(重复签到)🎉 说明: ' + obj.errors.details + '\n';
-                Totalresult.push(NCresult);
+                var VDresult = '视频签到结果: 成功(重复签到)🎉 说明: ' + obj.errors.details + '\n';
+                Totalresult.push(VDresult);
              } else {
-                var NCresult = '新人签到结果: 失败‼️ 说明: ' + obj.errors.details + '\n';
-                Totalresult.push(NCresult);
+                var VDresult = '视频签到结果: 失败‼️ 说明: ' + obj.errors.details + '\n';
+                Totalresult.push(VDresult);
              }
           }
           resolve('done');
@@ -289,14 +289,14 @@ function VideoCoin(t) {
           var obj = JSON.parse(data);
           qmnovel.log(`${cookieName}视频奖励, data: ${data}`)
           if (obj.data) {
-             var VCresult = '视频签到结果: 成功🎉 签到奖励: '+ $obj.data.coin +'金币\n';
+             var VCresult = '视频奖励: 成功🎉 签到奖励: '+ $obj.data.coin +'金币\n';
              Totalresult.push(VCresult);
           } else if (obj.errors) {
              if (obj.errors.code == 23010107) {
-                var VCresult = '视频签到结果: 成功(重复签到)🎉 说明: ' + obj.errors.details + '\n';
+                var VCresult = '视频奖励: 成功(重复签到)🎉 说明: ' + obj.errors.details + '\n';
                 Totalresult.push(VCresult);
              } else {
-                var VCresult = '视频签到结果: 失败‼️ 说明: ' + obj.errors.details + '\n';
+                var VCresult = '视频奖励: 失败‼️ 说明: ' + obj.errors.details + '\n';
                 Totalresult.push(VCresult);
              }
           }
