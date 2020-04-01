@@ -21,7 +21,15 @@ if (isGetCookie) {
 }
 
 function all() {
- LuckyTurn(time,1).then(LuckyTurn(time,2)).then(LuckyTurn(time,3)).then(LuckyTurn(time,4)).then(LuckyTurn(time,5)).then(DailyCheckin(time)).then(VideoCoin(time)).then(VideoCheckin(time)).then((data) => {Notify(1500)});
+  await DailyCheckin(time);
+  await VideoCoin(time);
+  await VideoCheckin(time);
+  await LuckyTurn(time,1);
+  await LuckyTurn(time,2);
+  await LuckyTurn(time,3);
+  await LuckyTurn(time,4);
+  await LuckyTurn(time,5);
+  await Notify();
 }
 
 
@@ -221,137 +229,125 @@ function GetCookie() {
 }
 
 function DailyCheckin(t) {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      try {
-          url = { url: DCURL, headers: JSON.parse(DCKEY) }
-          qmnovel.get(url, (error, response, data) => {
-          var obj = JSON.parse(data);
-          qmnovel.log(`${cookieName}日常签到, data: ${data}`)
-          if (obj.data) {
-             var DCresult = '日常签到结果: 成功🎉 签到奖励: '+ obj.data.coin +'金币\n';
-             Totalresult.push(DCresult);
-          } else if (obj.errors) {
-             if (obj.errors.code == 23010103) {
-                var DCresult = '日常签到结果: 成功(重复签到)🎉\n';
-                Totalresult.push(DCresult);
-             } else {
-                var DCresult = '日常签到结果: 失败‼️ 说明: ' + obj.errors.details + '\n';
-                Totalresult.push(DCresult);                
-             }
-          }          
-          resolve('done');
-        })
-      }
-      catch (erre) {
-        resolve('done')
-      }
-    }, t)
-  })
+  return new Promise(resolve => { setTimeout(() => {
+      url = { url: DCURL, headers: JSON.parse(DCKEY) }
+      qmnovel.get(url, (error, response, data) => { 
+        try {
+            var obj = JSON.parse(data);
+            qmnovel.log(`${cookieName}日常签到, data: ${data}`)
+            if (obj.data) {
+               var DCresult = '日常签到结果: 成功🎉 签到奖励: '+ obj.data.coin +'金币\n';
+               Totalresult.push(DCresult);
+            } else if (obj.errors) {
+               if (obj.errors.code == 23010103) {
+                  var DCresult = '日常签到结果: 成功(重复签到)🎉\n';
+                  Totalresult.push(DCresult);
+               } else {
+                  var DCresult = '日常签到结果: 失败‼️ 说明: ' + obj.errors.details + '\n';
+                  Totalresult.push(DCresult);                
+               }
+            }          
+            resolve('done');        
+         } catch (e) {
+            resolve('done')
+         }
+      })}, t)
+   })
 }
 
 function VideoCheckin(t) {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      try {
-          url = { url: VDURL, headers: JSON.parse(VDKEY) }
-          qmnovel.get(url, (error, response, data) => {
-          var obj = JSON.parse(data);
-          qmnovel.log(`${cookieName}视频签到, data: ${data}`)
-          if (obj.data) {
-             var VDresult = '视频签到结果: 成功🎉 签到奖励: '+ obj.data.reward_cash +'金币\n';
-             Totalresult.push(VDresult);
-          } else if (obj.errors) {
-             if (obj.errors.code == 13101002) {
-                var VDresult = '视频签到结果: 成功(重复签到)🎉 说明: ' + obj.errors.details + '\n';
-                Totalresult.push(VDresult);
-             } else {
-                var VDresult = '视频签到结果: 失败‼️ 说明: ' + obj.errors.details + '\n';
-                Totalresult.push(VDresult);
-             }
-          }
-          resolve('done');
-        })
-      }
-      catch (erre) {
-        resolve('done')
-      }
-    }, t)
-  })
+  return new Promise(resolve => { setTimeout(() => {
+      var ctime = new Date().getTime()
+      VDURL = VDURL.replace(/t=\d*/g,"t=" + ctime)
+      url = { url: VDURL, headers: JSON.parse(VDKEY) }
+      qmnovel.get(url, (error, response, data) => {
+        try {
+            var obj = JSON.parse(data);
+            qmnovel.log(`${cookieName}视频签到, data: ${data}`)
+            if (obj.data) {
+               var VDresult = '视频签到结果: 成功🎉 签到奖励: '+ obj.data.reward_cash +'金币\n';
+               Totalresult.push(VDresult);
+            } else if (obj.errors) {
+               if (obj.errors.code == 13201003) {
+                  var VDresult = '视频签到结果: 成功(重复签到)🎉 说明: ' + obj.errors.details + '\n';
+                  Totalresult.push(VDresult);
+               } else {
+                  var VDresult = '视频签到结果: 失败‼️ 说明: ' + obj.errors.details + '\n';
+                  Totalresult.push(VDresult);
+               }
+            }
+            resolve('done');        
+         } catch (e) {
+            resolve('done')
+         }
+      })}, t)
+   })
 }
 
 function VideoCoin(t) {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      try {
-          url = { url: VCURL, headers: JSON.parse(DCKEY) }
-          qmnovel.get(url, (error, response, data) => {
-          var obj = JSON.parse(data);
-          qmnovel.log(`${cookieName}视频奖励, data: ${data}`)
-          if (obj.data) {
-             var VCresult = '视频奖励: 成功🎉 签到奖励: '+ $obj.data.coin +'金币\n';
-             Totalresult.push(VCresult);
-          } else if (obj.errors) {
-             if (obj.errors.code == 23010107) {
-                var VCresult = '视频奖励: 成功(重复签到)🎉 说明: ' + obj.errors.details + '\n';
-                Totalresult.push(VCresult);
-             } else {
-                var VCresult = '视频奖励: 失败‼️ 说明: ' + obj.errors.details + '\n';
-                Totalresult.push(VCresult);
+  return new Promise(resolve => { setTimeout(() => {
+      url = { url: VCURL, headers: JSON.parse(DCKEY) }
+      qmnovel.get(url, (error, response, data) => {  
+        try {
+            var obj = JSON.parse(data);
+            qmnovel.log(`${cookieName}视频奖励, data: ${data}`)
+            if (obj.data) {
+               var VCresult = '视频奖励: 成功🎉 签到奖励: '+ $obj.data.coin +'金币\n';
+               Totalresult.push(VCresult);
+            } else if (obj.errors) {
+               if (obj.errors.code == 23010107) {
+                  var VCresult = '视频奖励: 成功(重复签到)🎉 说明: ' + obj.errors.details + '\n';
+                  Totalresult.push(VCresult);
+               } else {
+                  var VCresult = '视频奖励: 失败‼️ 说明: ' + obj.errors.details + '\n';
+                  Totalresult.push(VCresult);
              }
-          }
-          resolve('done');
-        })
-      }
-      catch (erre) {
-        resolve('done')
-      }
-    }, t)
-  })
+            }
+            resolve('done'); 
+         } catch (e) {
+            resolve('done')
+         }
+      })}, t)
+   })
 }
 
 function LuckyTurn(t,n) {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      try {
-          url = { url: LTURL, headers: JSON.parse(LTKEY) }
-          qmnovel.get(url, (error, response, data) => {
-          var obj = JSON.parse(data);
-          qmnovel.log(`${cookieName}幸运大转盘, data: ${data}`)
-          if (obj.data) {
-             var LTresult = '第' + n + '次' + '幸运大转盘: 成功🎉 转盘奖励: ' + obj.data.prize_title + '\n';
-             Totalresult.push(LTresult);
-          } else if (obj.errors) {
-             if (obj.errors.code == 13101002) {
-                var LTresult = '幸运大转盘: 次数耗尽🚫 说明: ' + obj.errors.details + '\n';
-                Totalresult.push(LTresult);
-             } else {
-                var LTresult = '幸运大转盘: 失败‼️ 说明: ' + obj.errors.details + '\n';
-                Totalresult.push(LTresult);
-             }
-          }
-          resolve('done');
-        })
-      }
-      catch (erre) {
-        resolve('done')
-      }
-    }, t)
-  })
+  return new Promise(resolve => { setTimeout(() => {
+      url = { url: LTURL, headers: JSON.parse(LTKEY) }
+      qmnovel.get(url, (error, response, data) => {
+        try { 
+            var obj = JSON.parse(data);
+            qmnovel.log(`${cookieName}幸运大转盘, data: ${data}`)
+            if (obj.data) {
+               var LTresult = '第' + n + '次' + '幸运大转盘: 成功🎉 转盘奖励: ' + obj.data.prize_title + '\n';
+               Totalresult.push(LTresult);
+            } else if (obj.errors) {
+               if (obj.errors.code == 13101002) {
+                  var LTresult = '幸运大转盘: 次数耗尽🚫 说明: ' + obj.errors.details + '\n';
+                  Totalresult.push(LTresult);
+               } else {
+                  var LTresult = '幸运大转盘: 失败‼️ 说明: ' + obj.errors.details + '\n';
+                  Totalresult.push(LTresult);
+               }
+            }
+            resolve('done');  
+         } catch (e) {
+            resolve('done')
+         }
+      })}, t)
+   })
 }
 
-function Notify(t) {
+function Notify() {
   return new Promise(resolve => {
-    setTimeout(() => {
       try {
           let details = Totalresult.join("")
           qmnovel.msg(cookieName, '', details)
+          resolve('done');
+      } catch (e) {
+          resolve('done')
       }
-      catch (erre) {
-        resolve()
-      }
-    }, t)
-  })
+   })
 }
 
 function init() {
